@@ -10,7 +10,7 @@
                         {{$answer->body}}
                     </div>
                     <div class="card-footer">
-                       
+
 
                         <a class="btn btn-primary float-right" href="#">
                             Edit Answer

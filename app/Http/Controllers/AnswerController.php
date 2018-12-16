@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Answer;
 use App\Notifications\NotifyNewPost;
+use App\Notifications\NotifyDeletePost;
 use App\Question;
 use App\User;
 use Illuminate\Support\Facades\Auth;
@@ -11,7 +12,6 @@ use Illuminate\Support\Facades\Auth;
 use App\Notifications\NotifyUpdatePost;
 
 use Illuminate\Http\Request;
-
 class AnswerController extends Controller
 {
     public function __construct()
@@ -128,8 +128,9 @@ class AnswerController extends Controller
     public function destroy($question, $answer)
     {
         $answer = Answer::find($answer);
-
         $answer->delete();
+        $NotifyDeletePostUser = User::find($question);
+        $NotifyDeletePostUser->notify(new NotifyDeletePost());
         return redirect()->route('questions.show',['question_id' => $question])->with('message', 'Delete');
 
     }

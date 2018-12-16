@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Answer;
+use App\Notifications\NotifyNewPost;
 use App\Question;
+use App\User;
 use Illuminate\Support\Facades\Auth;
+
+use App\Notifications\NotifyUpdatePost;
 
 use Illuminate\Http\Request;
 
@@ -54,6 +58,8 @@ class AnswerController extends Controller
         $Answer->user()->associate(Auth::user());
         $Answer->question()->associate($question);
         $Answer->save();
+        $UserNotifyNewPost = User::find($question->id);
+        $UserNotifyNewPost->notify(new NotifyNewPost());
 
         return redirect()->route('questions.show',['question_id' => $question->id])->with('message', 'Saved');
     }
@@ -106,6 +112,8 @@ class AnswerController extends Controller
         $answer = Answer::find($answer);
         $answer->body = $request->body;
         $answer->save();
+        $NotifyUpdatePostUser = User::find($question);
+        $NotifyUpdatePostUser->notify(new NotifyUpdatePost());
 
         return redirect()->route('answers.show',['question_id' => $question, 'answer_id' => $answer])->with('message', 'Updated');
 
